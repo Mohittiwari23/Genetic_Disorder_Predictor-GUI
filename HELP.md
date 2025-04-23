@@ -11,15 +11,16 @@ This document will walk you through how to set up, run, and use the application,
 
 ```
 project-root/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx           # Landing page
-│   ├── prediction/        # Prediction form and results
-│   └── disorder/          # Educational content per disorder
-├── components/            # UI components
-├── apiService.ts          # Frontend service to call FastAPI
+├──frontend/
+│  ├── app/                    # Next.js App Router pages
+│  │   ├── page.tsx           # Landing page
+│  │   ├── prediction/        # Prediction form and results
+│  │   └── disorder/          # Educational content per disorder
+│  ├── components/            # UI components
+│  ├── apiService.ts          # Frontend service to call FastAPI
+│  ├── .env.local             # Environment variables for frontend
 ├── main.py                # FastAPI backend
 ├── functions.py           # Backend utility functions
-├── .env.local             # Environment variables for frontend
 ├── model files/           # pca.pkl, label_encoders.pkl, xgb_model.pkl
 ```
 
