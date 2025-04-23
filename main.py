@@ -15,8 +15,8 @@ class InputDict(BaseModel):
     gene_defect_paternal: str
     heart_rate: str
     resp_rate: str
-    RBC_count: int
-    WBC_count: int
+    RBC_count: float
+    WBC_count: float
     follow_up: str
     symptom_total: int
     birth_comp_asphyxia: str
@@ -39,7 +39,9 @@ class OutputDict(BaseModel):
 app = FastAPI()
 
 origins = [
-    "https://..."
+    "http://localhost:3000",  # Next.js default
+    "http://localhost:8000",  # If running on the same origin
+    "https://your-production-domain.com"  # Your production domain
 ]
 
 app.add_middleware(
@@ -54,6 +56,9 @@ label_encoder = joblib.load('label_encoders.pkl')
 pca = joblib.load('pca.pkl')
 xgb_classifier = joblib.load('xgb_model.pkl')
 
+@app.get("/")
+def read_root():
+    return {"message": "Genetic Disorder Predictor API is live"}
 
 
 @app.post("/prediction", response_model=OutputDict)
