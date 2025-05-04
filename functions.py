@@ -28,8 +28,7 @@ def drop_columns(df):
         "resp_rate", "heart_rate",
         "birth_comp_asphyxia", "birth_comp_autopsy", "num_birth_defects",
         "maternal_illness_hist", "radiation_expo_hist", "substance_abuse_hist",
-        "prev_preg_anamolies", "previous_abortions",
-        "maternal_gene_defect", "prev_abortions",
+        "maternal_gene_defect", "paternal_gene_defect",
         "gene_defect_maternal", "gene_defect_paternal",
     ]
     return df.drop(columns=col_to_drop, errors="ignore")

@@ -28,7 +28,7 @@ class InputDict(BaseModel):
     folic_acid_supplement: str
     assisted_conception: str
     prev_preg_anamolies: str
-    prev_abortions: str
+    prev_abortions: int
 
 class OutputDict(BaseModel):
     class_0: float
@@ -39,9 +39,7 @@ class OutputDict(BaseModel):
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",  # Next.js default
-    "http://localhost:8000",  # If running on the same origin
-    "https://your-production-domain.com"  # Your production domain
+    "http://localhost:3000"
 ]
 
 app.add_middleware(
@@ -54,7 +52,7 @@ app.add_middleware(
 
 label_encoder = joblib.load('label_encoders.pkl')
 pca = joblib.load('pca.pkl')
-xgb_classifier = joblib.load('xgb_model.pkl')
+hybrid_classifier = joblib.load('hybrid_model.pkl')
 
 @app.get("/")
 def read_root():
@@ -71,7 +69,6 @@ def predict(input_data: InputDict):
     df["vital_status"] = df.apply(lambda row: func.classify_vital_status(row["resp_rate"], row["heart_rate"]), axis=1)
     df["birth_complications"] = df.apply(lambda row: func.classify_birth_complications(row["birth_comp_asphyxia"], row["birth_comp_autopsy"], row["num_birth_defects"]), axis=1)
     df["maternal_risk_factors"] = df.apply(lambda row: func.classify_maternal_risk(row["maternal_illness_hist"], row["radiation_expo_hist"], row["substance_abuse_hist"]), axis=1)
-    df["pregnancy_history"] = df.apply(lambda row: func.classify_pregnancy_history(row["prev_preg_anamolies"], row["prev_abortions"]), axis=1)
     df["status"] = 'Alive'
     
     df = func.drop_columns(df)
@@ -99,15 +96,15 @@ def predict(input_data: InputDict):
 
     df.drop(columns=['age_group','patient_age'], inplace=True)
 
-    df_final = pca.transform(df)
+    # df_final = pca.transform(df)
 
-    proba = xgb_classifier.predict_proba(df_final)
+    proba = hybrid_classifier.predict_proba(df)
     predicted_class = np.argmax(proba, axis=1)[0]
 
     class_labels = {
         0: "Mitochondrial genetic inheritance disorder",
         1: "Multifactorial genetic inheritance disorder",
-        2: "Single-gene inheritance diseases"
+        2: "Single-gene inheritance diseases",
     }
 
     return {
